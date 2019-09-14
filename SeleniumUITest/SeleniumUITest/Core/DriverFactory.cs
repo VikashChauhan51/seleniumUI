@@ -20,28 +20,28 @@ namespace SeleniumUITest.Core
         private static readonly string driverPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
 
-        public static IWebDriver OpenBrowser(DriverType DriverType)
+        public static Browser OpenBrowser(DriverConfig config)
         {
-            switch (DriverType)
+            switch (config.DriverType)
             {
                 case DriverType.Chrome:
-                    return OpenChrome();
+                    return new Browser(OpenChrome((ChromeOptions)config.DriverOptions));
                 case DriverType.Edge:
-                    return OpenEdge();
+                    return new Browser(OpenEdge((EdgeOptions)config.DriverOptions));
                 case DriverType.Firefox:
-                    return OpenFirefox();
+                    return new Browser(OpenFirefox((FirefoxOptions)config.DriverOptions));
                 case DriverType.InternetExplorer:
-                    return OpenIE();
+                    return new Browser(OpenIE((InternetExplorerOptions)config.DriverOptions));
                 case DriverType.Opera:
-                    return OpenOpera();
+                    return new Browser(OpenOpera((OperaOptions)config.DriverOptions));
                 case DriverType.Safari:
-                    return OpenSafari();
+                    return new Browser(OpenSafari((SafariOptions)config.DriverOptions));
                 case DriverType.Remote:
-                    return OpenChrome();
+                    return new Browser(OpenChrome((ChromeOptions)config.DriverOptions));
                 case DriverType.BrowserStack:
-                    return OpenChrome();
+                    return new Browser(OpenChrome((ChromeOptions)config.DriverOptions));
                 case DriverType.Unknown:
-                    return OpenChrome();
+                    return new Browser(OpenChrome((ChromeOptions)config.DriverOptions));
                 default:
                     return null;
             }
@@ -49,38 +49,39 @@ namespace SeleniumUITest.Core
 
         }
 
-        private static ChromeDriver OpenChrome()
+        private static IWebDriver OpenChrome(ChromeOptions options)
         {
             return new ChromeDriver(driverPath);
         }
 
-        private static EdgeDriver OpenEdge()
+        private static IWebDriver OpenEdge(EdgeOptions options)
         {
             return new EdgeDriver(driverPath);
         }
 
-        private static FirefoxDriver OpenFirefox()
+        private static IWebDriver OpenFirefox(FirefoxOptions options)
         {
             return new FirefoxDriver(driverPath);
         }
 
-        private static InternetExplorerDriver OpenIE()
+        private static IWebDriver OpenIE(InternetExplorerOptions options)
         {
             return new InternetExplorerDriver(driverPath);
         }
 
-        private static OperaDriver OpenOpera()
+        private static IWebDriver OpenOpera(OperaOptions options)
         {
             return new OperaDriver(driverPath);
         }
 
-        private static SafariDriver OpenSafari()
+        private static IWebDriver OpenSafari(SafariOptions options)
         {
             return new SafariDriver(driverPath);
         }
 
-        //private IWebDriver OpenRemote()
+        //private IWebDriver OpenRemote(ChromeOptions options)
         //{
+            //DesiredCapabilities
         //    return new RemoteWebDriver(new Uri(this.RemoteUrl), (ICapabilities)this.DefaultConfigObject.RemoteCapabilities);
         //}
     }

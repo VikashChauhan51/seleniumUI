@@ -10,7 +10,7 @@ namespace SeleniumUITest
     {
         public static void ScrollToTop(this IWebDriver driver, int timeoutInSeconds = 15)
         {
-            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds((double)timeoutInSeconds));
+            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             WebDriverWait webDriverWait2 = webDriverWait1;
             Type[] typeArray = new Type[1];
             int index = 0;
@@ -26,7 +26,7 @@ namespace SeleniumUITest
 
         public static void ScrollToBottom(this IWebDriver driver, int timeoutInSeconds = 15)
         {
-            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds((double)timeoutInSeconds));
+            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             WebDriverWait webDriverWait2 = webDriverWait1;
             Type[] typeArray = new Type[1];
             int index = 0;
@@ -42,7 +42,7 @@ namespace SeleniumUITest
 
         public static void ScrollToElement(this IWebDriver driver, IWebElement element, bool toTop = true, int timeoutInSeconds = 15)
         {
-            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds((double)timeoutInSeconds));
+            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             WebDriverWait webDriverWait2 = webDriverWait1;
             Type[] typeArray = new Type[1];
             int index1 = 0;
@@ -67,7 +67,7 @@ namespace SeleniumUITest
 
         public static void ScrollToElement(this IWebDriver driver, By by, bool toTop = true, int timeoutInSeconds = 15)
         {
-            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds((double)timeoutInSeconds));
+            WebDriverWait webDriverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             WebDriverWait webDriverWait2 = webDriverWait1;
             Type[] typeArray = new Type[1];
             int index1 = 0;
@@ -81,10 +81,10 @@ namespace SeleniumUITest
                 object[] objArray = new object[2];
                 int index2 = 0;
                 IWebElement element = driver.FindElement(by);
-                objArray[index2] = (object)element;
+                objArray[index2] = element;
                 int index3 = 1;
                 var local = toTop ? 1 : 0;
-                objArray[index3] = (object)local;
+                objArray[index3] = local;
                 ijavaScriptExecutor.ExecuteScript(str, objArray);
                 return true;
             });

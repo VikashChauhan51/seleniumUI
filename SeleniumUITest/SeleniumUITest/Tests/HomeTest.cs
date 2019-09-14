@@ -10,7 +10,7 @@ namespace Tests
     [TestFixtureSource(typeof(MainFixtureData), "FixtureParms")]
     public class HomeTest : BaseTest
     {
-        public HomeTest(DriverType driverType, string url) : base(driverType, url)
+        public HomeTest(DriverConfig config, string url) : base(config, url)
         {
 
         }
