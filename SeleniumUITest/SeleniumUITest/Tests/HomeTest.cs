@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using OpenQA.Selenium;
 using SeleniumUITest.Core;
 using SeleniumUITest.PageObjects;
 using SeleniumUITest.TestData;
@@ -10,7 +11,7 @@ namespace Tests
     [TestFixtureSource(typeof(MainFixtureData), "FixtureParms")]
     public class HomeTest : BaseTest
     {
-        public HomeTest(DriverConfig config, string url) : base(config, url)
+        public HomeTest(DriverType driverType, DriverOptions options, string url) : base(driverType, options, url)
         {
 
         }

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SeleniumUITest.Core
+namespace SeleniumUITest.Utilities
 {
-    public static class Config
+    public static class EnvironmentHelper
     {
         public static string GetEnvironmentVariableOrDefault(string envVar, string defaultValue)
         {
@@ -19,7 +19,7 @@ namespace SeleniumUITest.Core
 
         public static IEnumerable<string> GetEnvironmentVariableWithValueList(string envVar, char delimiter = ';')
         {
-            
+
             string environmentVariable = Environment.GetEnvironmentVariable(envVar);
             if (environmentVariable == null)
                 return Enumerable.Empty<string>();
@@ -49,7 +49,7 @@ namespace SeleniumUITest.Core
         {
             return FilterAndTrimDictionaryKeysByPrefix(GetEnvironmentVariables(), prefix);
         }
- 
+
 
         private static Dictionary<string, object> CombineDictionaryTypes(Dictionary<string, bool> _dictBool, Dictionary<string, int> _dictInt, Dictionary<string, string> _dictStr)
         {

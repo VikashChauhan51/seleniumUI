@@ -12,8 +12,6 @@ namespace SeleniumUITest.Utilities.Enums
         InternetExplorer,
         Opera,
         Safari,
-        Remote,
-        BrowserStack,
-        Unknown,
+        Remote
     }
 }

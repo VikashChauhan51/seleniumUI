@@ -15,7 +15,7 @@ namespace SeleniumUITest.TestData
         {
             get
             {
-                yield return new TestFixtureData(new DriverConfig {DriverType= DriverType.Chrome, DriverOptions=new ChromeOptions() }, "http://www.example.com");
+                yield return new TestFixtureData( DriverType.Chrome, new ChromeOptions(), "http://www.example.com");
                 
             }
         }

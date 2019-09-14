@@ -147,27 +147,8 @@ namespace SeleniumUITest.Utilities
             }
             else
             {
-                if (stringHash <= 2608177081U)
-                {
-                    if ((int)stringHash != 1797453421)
-                    {
-                        if ((int)stringHash != -1910159852)
-                        {
-                            if ((int)stringHash == -1686790215 && s == "unknown")
-                                return DriverType.Unknown;
-                            goto label_30;
-                        }
-                        else
-                        {
-                            if (s == "opera")
-                                return DriverType.Opera;
-                            goto label_30;
-                        }
-                    }
-                    else if (!(s == "ff"))
-                        goto label_30;
-                }
-                else if ((int)stringHash != -1254955327)
+                
+                 if ((int)stringHash != -1254955327)
                 {
                     if ((int)stringHash != -947029677)
                     {
@@ -181,12 +162,7 @@ namespace SeleniumUITest.Utilities
                         goto label_30;
                     }
                 }
-                else
-                {
-                    if (s == "browserstack")
-                        return DriverType.BrowserStack;
-                    goto label_30;
-                }
+                 
                 return DriverType.Firefox;
             }
         label_30:
@@ -230,7 +206,7 @@ namespace SeleniumUITest.Utilities
             }
             else if (s == "OpenQA.Selenium.IE.InternetExplorerDriver")
                 return DriverType.InternetExplorer;
-            return DriverType.Unknown;
+            return DriverType.Remote;
         }
 
         private static string CombineMessages(params string[] messages)

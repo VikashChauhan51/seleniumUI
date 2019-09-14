@@ -9,17 +9,19 @@ namespace SeleniumUITest.Core
     public abstract class BaseTest
     {
 
-        private readonly DriverConfig _config;
+        private readonly DriverType _driverType;
+        private readonly DriverOptions _options;
         private readonly string _url;
         protected Browser WebBrowser { get; private set; }
-        public BaseTest(DriverConfig config, string url)
+        public BaseTest(DriverType driverType, DriverOptions options, string url)
         {
-            this._config = config;
+            this._driverType = driverType;
+            this._options = options;
             this._url = url;
         }
         protected void Init()
         {
-            WebBrowser = DriverFactory.OpenBrowser(_config);
+            WebBrowser = new DriverFactory(_driverType, _options).OpenBrowser();
             WebBrowser.GoTo(_url);
         }
 

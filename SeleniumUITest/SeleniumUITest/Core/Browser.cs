@@ -140,7 +140,7 @@ namespace SeleniumUITest.Core
         public void SetImplicitWait(int milliseconds)
         {
 
-            this.Driver.Manage().Timeouts().ImplicitWait = (TimeSpan.FromMilliseconds((double)milliseconds));
+            this.Driver.Manage().Timeouts().ImplicitWait = (TimeSpan.FromMilliseconds(milliseconds));
         }
         public void SaveScreenshot(string path)
         {
