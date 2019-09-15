@@ -30,11 +30,16 @@ namespace SeleniumUITest.Core
             PopulateServiceTypes();
             PopulateDriverTypes();
         }
+        public DriverFactory(DriverType driverType) : this(driverType, null)
+        {
+
+        }
         public DriverFactory(DriverType driverType, DriverOptions options)
         {
             this._driverType = driverType;
             this._options = options;
         }
+
         private static void PopulateOptionsTypes()
         {
             optionsTypes[DriverType.Chrome] = typeof(ChromeOptions);

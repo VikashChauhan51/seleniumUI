@@ -11,20 +11,10 @@ namespace Tests
     [TestFixtureSource(typeof(MainFixtureData), "FixtureParms")]
     public class HomeTest : BaseTest
     {
-        public HomeTest(DriverType driverType, DriverOptions options, string url) : base(driverType, options, url)
+        public HomeTest(DriverType driverType) : base(driverType)
         {
 
-        }
-        [SetUp]
-        public void BeforeTest()
-        {
-            Init();
-        }
-        [TearDown]
-        public void AfterTest()
-        {
-            Completed();
-        }
+        }   
 
         [Test]
         public void Test1()
