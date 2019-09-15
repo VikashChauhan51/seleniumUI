@@ -12,8 +12,10 @@ namespace SeleniumUITest.Core
     public class Browser
     {
         private readonly IWebDriver _driver;
-        public ICapabilities Capabilities => ((RemoteWebDriver)_driver).Capabilities;
+        private ICapabilities Capabilities => ((RemoteWebDriver)_driver).Capabilities;
         public IWebDriver Driver => _driver;
+        public string BrowserName => Capabilities.GetCapability("browserName").ToString();
+        public string BrowserVersion => Capabilities.GetCapability("browserVersion").ToString();
         public Browser(IWebDriver driver)
         {
             this._driver = driver;
@@ -52,12 +54,12 @@ namespace SeleniumUITest.Core
         public void ScrollToTop(int timeoutInSeconds = 15)
         {
 
-            WebDriverJsExtensions.ScrollToTop(this.Driver, timeoutInSeconds);
+            this.Driver.ScrollToTop(timeoutInSeconds);
         }
 
         public void ScrollToBottom(int timeoutInSeconds = 15)
         {
-            WebDriverJsExtensions.ScrollToBottom(this.Driver, timeoutInSeconds);
+            this.Driver.ScrollToBottom(timeoutInSeconds);
         }
         public ReadOnlyCollection<string> GetAllWindows()
         {
