@@ -8,10 +8,10 @@ using SeleniumUITest.Utilities.Enums;
 
 namespace Tests
 {
-    [TestFixtureSource(typeof(MainFixtureData), "FixtureParms")]
+    [TestFixture]
     public class HomeTest : BaseTest
     {
-        public HomeTest(DriverType driverType) : base(driverType)
+        public HomeTest()
         {
 
         }   

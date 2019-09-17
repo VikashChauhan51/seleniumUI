@@ -17,8 +17,7 @@ namespace SeleniumUITest.Core
 {
     public class DriverFactory
     {
-        private readonly DriverType _driverType;
-        private readonly DriverOptions _options;
+        private readonly DriverConfig _config;
         private static readonly string driverPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static readonly Dictionary<DriverType, Type> serviceTypes = new Dictionary<DriverType, Type>();
         private static readonly Dictionary<DriverType, Type> optionsTypes = new Dictionary<DriverType, Type>();
@@ -30,14 +29,13 @@ namespace SeleniumUITest.Core
             PopulateServiceTypes();
             PopulateDriverTypes();
         }
-        public DriverFactory(DriverType driverType) : this(driverType, null)
+        public DriverFactory(EnvironmentConfig envConfig) : this(envConfig.Config)
         {
 
         }
-        public DriverFactory(DriverType driverType, DriverOptions options)
+        public DriverFactory(DriverConfig config)
         {
-            this._driverType = driverType;
-            this._options = options;
+            this._config = config;
         }
 
         private static void PopulateOptionsTypes()
@@ -71,7 +69,7 @@ namespace SeleniumUITest.Core
         public Browser OpenBrowser()
         {
             Type browserType = typeof(Browser);
-            IWebDriver driver = CreateDriverWithOptions(_driverType, _options);
+            IWebDriver driver = _config.UseDefaultDriverOptionsOnly ? CreateDriverWithOptions(_config.Driver, null) : CreateDriverWithOptions();
             List<Type> constructorArgTypeList = new List<Type>();
             constructorArgTypeList.Add(typeof(IWebDriver));
             ConstructorInfo ctorInfo = browserType.GetConstructor(constructorArgTypeList.ToArray());
@@ -140,8 +138,134 @@ namespace SeleniumUITest.Core
             driver = (IWebDriver)Activator.CreateInstance(driverType);
             return driver;
         }
+        private IWebDriver CreateDriverWithOptions()
+        {
+            DriverService service = null;
+            DriverOptions options = null;
+            Type driverType = driverTypes[_config.Driver];
+            List<Type> constructorArgTypeList = new List<Type>();
+            IWebDriver driver = null;
+            switch (_config.Driver)
+            {
+                case DriverType.Chrome:
 
-        private static T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()
+                    options =GetChromeDriverOptions();
+                    service = CreateService<ChromeDriverService>(driverType);
+                    break;
+                case DriverType.Edge:
+                    options = GetEdgeDriverOptions();
+                    service = CreateService<EdgeDriverService>(driverType);
+                    break;
+                case DriverType.Firefox:
+                    options = GetFirefoxDriverOptions();
+                    service = CreateService<FirefoxDriverService>(driverType);
+                    break;
+                case DriverType.InternetExplorer:
+                    options = GetIEDriverOptions();
+                    service = CreateService<InternetExplorerDriverService>(driverType);
+                    break;
+                case DriverType.Opera:
+                    options = GetOperaDriverOptions();
+                    service = CreateService<OperaDriverService>(driverType);
+                    break;
+                case DriverType.Safari:
+                    options = GetSafariDriverOptions();
+                    service = CreateService<SafariDriverService>(driverType);
+                    break;
+                case DriverType.Remote:
+                    break;
+            }
+
+            this.OnDriverLaunching(service, options);
+            constructorArgTypeList.Add(serviceTypes[_config.Driver]);
+            constructorArgTypeList.Add(optionsTypes[_config.Driver]);
+            ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
+            if (ctorInfo != null)
+            {
+                return (IWebDriver)ctorInfo.Invoke(new object[] { service, options });
+            }
+
+            driver = (IWebDriver)Activator.CreateInstance(driverType);
+            return driver;
+        }
+        private ChromeOptions GetChromeDriverOptions()
+        {
+            ChromeOptions options = new ChromeOptions();
+            if (_config.ExtensionsList.Count > 0)
+                options.AddExtensions(_config.ExtensionsList);
+            if (_config.ArgumentsList.Count > 0)
+                options.AddArguments(_config.ArgumentsList);
+            foreach (KeyValuePair<string, object> keyValuePair in _config.AdditionalCapability)
+                options.AddAdditionalCapability(keyValuePair.Key, keyValuePair.Value);
+            foreach (KeyValuePair<string, object> keyValuePair in _config.UserProfilePreferences)
+                options.AddUserProfilePreference(keyValuePair.Key, keyValuePair.Value);
+
+            return options;
+        }
+        private EdgeOptions GetEdgeDriverOptions()
+        {
+            EdgeOptions options = new EdgeOptions();
+            foreach (KeyValuePair<string, object> keyValuePair in _config.AdditionalCapability)
+                options.AddAdditionalCapability(keyValuePair.Key, keyValuePair.Value);
+
+            return options;
+        }
+        private FirefoxOptions GetFirefoxDriverOptions()
+        {
+            FirefoxOptions options = new FirefoxOptions();
+            FirefoxProfile firefoxProfile = new FirefoxProfile();
+            if (_config.ExtensionsList.Count > 0)
+                foreach (string str in _config.ExtensionsList)
+                    firefoxProfile.AddExtension(str);
+            if (_config.ArgumentsList.Count > 0)
+                options.AddArguments(_config.ArgumentsList);
+            foreach (KeyValuePair<string, object> keyValuePair in _config.AdditionalCapability)
+                options.AddAdditionalCapability(keyValuePair.Key, keyValuePair.Value);
+            foreach (KeyValuePair<string, object> keyValuePair in _config.UserProfilePreferences)
+            {
+                if (keyValuePair.Value.GetType() == typeof(bool))
+                    firefoxProfile.SetPreference(keyValuePair.Key, (bool)keyValuePair.Value);
+                else if (keyValuePair.Value.GetType() == typeof(int))
+                    firefoxProfile.SetPreference(keyValuePair.Key, (int)keyValuePair.Value);
+                else if ((keyValuePair.Value.GetType() == typeof(string)))
+                    firefoxProfile.SetPreference(keyValuePair.Key, (string)keyValuePair.Value);
+                else
+                    throw new NotImplementedException(string.Format("There is no support for setting Firefox preferences of type: {0}", (object)keyValuePair.Value.GetType()));
+            }
+
+
+            return options;
+        }
+        private InternetExplorerOptions GetIEDriverOptions()
+        {
+            InternetExplorerOptions options = new InternetExplorerOptions();
+            foreach (KeyValuePair<string, object> keyValuePair in _config.AdditionalCapability)
+                options.AddAdditionalCapability(keyValuePair.Key, keyValuePair.Value);
+            return options;
+        }
+        private OperaOptions GetOperaDriverOptions()
+        {
+            OperaOptions options = new OperaOptions();
+            if (_config.ExtensionsList.Count > 0)
+                options.AddExtensions(_config.ExtensionsList);
+            if (_config.ArgumentsList.Count > 0)
+                options.AddArguments(_config.ArgumentsList);
+            foreach (KeyValuePair<string, object> keyValuePair in _config.AdditionalCapability)
+                options.AddAdditionalCapability(keyValuePair.Key, keyValuePair.Value);
+            foreach (KeyValuePair<string, object> keyValuePair in _config.UserProfilePreferences)
+                options.AddUserProfilePreference(keyValuePair.Key, keyValuePair.Value);
+
+            return options;
+        }
+        private SafariOptions GetSafariDriverOptions()
+        {
+            SafariOptions options = new SafariOptions();
+            foreach (KeyValuePair<string, object> keyValuePair in _config.AdditionalCapability)
+                options.AddAdditionalCapability(keyValuePair.Key, keyValuePair.Value);
+            return options;
+        }
+    
+        private T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()
         {
             T options = new T();
             Type optionsType = typeof(T);
@@ -162,7 +286,7 @@ namespace SeleniumUITest.Core
             return options;
         }
 
-        private static T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T : DriverOptions, new()
+        private T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T : DriverOptions, new()
         {
             // If the driver type has a static DefaultOptions property,
             // get the value of that property, which should be a valid
@@ -184,7 +308,7 @@ namespace SeleniumUITest.Core
             return mergedOptions;
         }
 
-        private static T CreateService<T>(Type driverType) where T : DriverService
+        private T CreateService<T>(Type driverType) where T : DriverService
         {
             T service = default(T);
             Type serviceType = typeof(T);
@@ -217,7 +341,7 @@ namespace SeleniumUITest.Core
             return service;
         }
 
-        private static object GetDefaultOptions(Type driverType)
+        private object GetDefaultOptions(Type driverType)
         {
             PropertyInfo info = driverType.GetProperty("DefaultOptions", BindingFlags.Public | BindingFlags.Static);
             if (info != null)
@@ -228,5 +352,6 @@ namespace SeleniumUITest.Core
 
             return null;
         }
+
     }
 }

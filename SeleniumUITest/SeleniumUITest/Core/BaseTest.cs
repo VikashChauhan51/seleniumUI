@@ -6,26 +6,54 @@ using SeleniumUITest.Utilities.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace SeleniumUITest.Core
 {
-    
+
     public abstract class BaseTest
     {
 
         private readonly DriverFactory _driverFactory;
-        private readonly string _url;
         protected Browser WebBrowser { get; private set; }
-        private const int _defaultWaitTime = 30000;
-        public BaseTest(DriverType driverType)
+        private static EnvironmentConfig _envConfig;
+        static BaseTest()
         {
-            this._driverFactory = new DriverFactory(driverType);
-            this._driverFactory.DriverStarting += OnDriverStarting;
-            this._url = "http://www.example.com";
+            ReadConfig();
         }
+        public BaseTest()
+        {
+            this._driverFactory = new DriverFactory(_envConfig);
+            this._driverFactory.DriverStarting += OnDriverStarting;
+        }
+        public static string ProjectDirectory
+        {
+            get
+            {
+                var projectName = Assembly.GetExecutingAssembly().GetName().Name;
+                var info = new DirectoryInfo(CurrentDirectory);
+                while (info != null)
+                {
+                    if (info.Name.Equals(projectName))
+                    {
+                        return info.FullName;
+                    }
+                    info = info.Parent;
+                }
+                return null;
 
+            }
+        }
+        public static string RootDirectory
+        {
+            get
+            {
+                return new DirectoryInfo(CurrentDirectory).Root.FullName;
+
+            }
+        }
         public static string CurrentDirectory
         {
             get
@@ -58,8 +86,8 @@ namespace SeleniumUITest.Core
         {
             WebBrowser = _driverFactory.OpenBrowser();
             WebBrowser.MaximizeWindow();
-            WebBrowser.SetImplicitWait(_defaultWaitTime);
-            WebBrowser.GoTo(_url);
+            WebBrowser.SetImplicitWait(_envConfig.DefaultWaitTime);
+            WebBrowser.GoTo(_envConfig.Url);
         }
 
         protected void Completed()
@@ -70,12 +98,13 @@ namespace SeleniumUITest.Core
 
         private static void ReadConfig()
         {
-            string defaultConfigFile = Path.Combine(CurrentDirectory, "appconfig.json");
+
+            string defaultConfigFile = Path.Combine(ProjectDirectory, "appconfig.json");
             string configFile = TestContext.Parameters.Get<string>("ConfigFile", defaultConfigFile).Replace('/', Path.DirectorySeparatorChar);
 
             string content = File.ReadAllText(configFile);
-            TestConfig env = JsonConvert.DeserializeObject<TestConfig>(content);
-            bool captureWebServerOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.CaptureWebServerOutput);
+            _envConfig = JsonConvert.DeserializeObject<EnvironmentConfig>(content);
+
         }
     }
 }
