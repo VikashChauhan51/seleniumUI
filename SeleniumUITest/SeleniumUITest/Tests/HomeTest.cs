@@ -1,17 +1,19 @@
+using System;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using OpenQA.Selenium;
 using SeleniumUITest.Core;
+using SeleniumUITest.i18n;
 using SeleniumUITest.PageObjects;
 using SeleniumUITest.TestData;
 using SeleniumUITest.Utilities.Enums;
 
 namespace Tests
 {
-    [TestFixture]
+    [TestFixtureSource(typeof(MainFixtureData), "FixtureParms")]
     public class HomeTest : BaseTest
     {
-        public HomeTest()
+        public HomeTest(string language):base(language)
         {
 
         }   
@@ -19,9 +21,11 @@ namespace Tests
         [Test]
         public void Test1()
         {
+            Console.WriteLine(Resource.ApplicationName);
             new HomePage(this.WebBrowser)
                 .VerifyHomePageIsVisible();
             Assert.Pass();
         }
+         
     }
 }

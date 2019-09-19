@@ -14,7 +14,6 @@ namespace SeleniumUITest.PageObjects
 
         public HomePage VerifyHomePageIsVisible()
         {
-
             Wait.UntilSuccess(() =>
             {
                 Driver.Title.Should().NotBeNullOrEmpty();

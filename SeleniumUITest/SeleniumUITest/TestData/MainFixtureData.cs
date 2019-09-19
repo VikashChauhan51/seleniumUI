@@ -10,10 +10,7 @@ namespace SeleniumUITest.TestData
         {
             get
             {
-                yield return new TestFixtureData( DriverType.Chrome);
-                yield return new TestFixtureData(DriverType.InternetExplorer);
-                yield return new TestFixtureData(DriverType.Firefox);
-
+                yield return new TestFixtureData(Constants.English);
             }
         }
     }

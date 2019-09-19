@@ -20,7 +20,7 @@ namespace SeleniumUITest.Core
         }
 
         public InlinePage WithScripts(params string[] scripts)
-        {
+        {  
             this.scripts.AddRange(scripts);
             return this;
         }

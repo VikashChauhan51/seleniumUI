@@ -2,9 +2,11 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using SeleniumUITest.i18n;
 using SeleniumUITest.Utilities.Enums;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,16 +19,20 @@ namespace SeleniumUITest.Core
     {
 
         private readonly DriverFactory _driverFactory;
-        protected Browser WebBrowser { get; private set; }
         private static EnvironmentConfig _envConfig;
+        protected Browser WebBrowser { get; private set; }
+        protected readonly string language;
         static BaseTest()
         {
             ReadConfig();
         }
-        public BaseTest()
+        protected BaseTest(string language)
         {
+            this.language = language;
+            Resource.Culture = new CultureInfo(language);
             this._driverFactory = new DriverFactory(_envConfig);
             this._driverFactory.DriverStarting += OnDriverStarting;
+
         }
         public static string ProjectDirectory
         {
